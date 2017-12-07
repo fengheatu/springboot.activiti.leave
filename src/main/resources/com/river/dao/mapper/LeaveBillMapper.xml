@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.river.dao.mapper.LeaveBillMapper" >
+  <resultMap id="BaseResultMap" type="com.river.model.po.LeaveBill" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="days" property="days" jdbcType="INTEGER" />
+    <result column="reson" property="reson" jdbcType="VARCHAR" />
+    <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="BIGINT" />
+    <result column="update_by" property="updateBy" jdbcType="BIGINT" />
+    <result column="gm_create" property="gmCreate" jdbcType="TIMESTAMP" />
+    <result column="gm_modified" property="gmModified" jdbcType="TIMESTAMP" />
+    <result column="is_delete" property="isDelete" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, days, reson, begin_time, create_by, update_by, gm_create, gm_modified, 
+    is_delete
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from leave_bill
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from leave_bill
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.river.model.po.LeaveBill" >
+    insert into leave_bill (id, user_id, days, 
+      reson, begin_time, create_by, 
+      update_by, gm_create, gm_modified, 
+      is_delete)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{days,jdbcType=INTEGER}, 
+      #{reson,jdbcType=VARCHAR}, #{beginTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=BIGINT}, 
+      #{updateBy,jdbcType=BIGINT}, #{gmCreate,jdbcType=TIMESTAMP}, #{gmModified,jdbcType=TIMESTAMP}, 
+      #{isDelete,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.river.model.po.LeaveBill" >
+    insert into leave_bill
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="days != null" >
+        days,
+      </if>
+      <if test="reson != null" >
+        reson,
+      </if>
+      <if test="beginTime != null" >
+        begin_time,
+      </if>
+      <if test="createBy != null" >
+        create_by,
+      </if>
+      <if test="updateBy != null" >
+        update_by,
+      </if>
+      <if test="gmCreate != null" >
+        gm_create,
+      </if>
+      <if test="gmModified != null" >
+        gm_modified,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="days != null" >
+        #{days,jdbcType=INTEGER},
+      </if>
+      <if test="reson != null" >
+        #{reson,jdbcType=VARCHAR},
+      </if>
+      <if test="beginTime != null" >
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="gmCreate != null" >
+        #{gmCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmModified != null" >
+        #{gmModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.river.model.po.LeaveBill" >
+    update leave_bill
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="days != null" >
+        days = #{days,jdbcType=INTEGER},
+      </if>
+      <if test="reson != null" >
+        reson = #{reson,jdbcType=VARCHAR},
+      </if>
+      <if test="beginTime != null" >
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="gmCreate != null" >
+        gm_create = #{gmCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmModified != null" >
+        gm_modified = #{gmModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.river.model.po.LeaveBill" >
+    update leave_bill
+    set user_id = #{userId,jdbcType=BIGINT},
+      days = #{days,jdbcType=INTEGER},
+      reson = #{reson,jdbcType=VARCHAR},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=BIGINT},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      gm_create = #{gmCreate,jdbcType=TIMESTAMP},
+      gm_modified = #{gmModified,jdbcType=TIMESTAMP},
+      is_delete = #{isDelete,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
