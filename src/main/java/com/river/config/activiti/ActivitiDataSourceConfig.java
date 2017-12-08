@@ -2,8 +2,10 @@ package com.river.config.activiti;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.AbstractProcessEngineAutoConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -12,6 +14,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: he.feng
@@ -23,6 +27,12 @@ public class ActivitiDataSourceConfig extends AbstractProcessEngineAutoConfigura
 
     @Resource
     private ActivitiDataSourceProperties activitiDataSourceProperties;
+
+    @Autowired
+    private CustomGroupEntityManagerFactory customGroupEntityManagerFactory;
+
+    @Autowired
+    private CustomUserEntityManagerFactory customUserEntityManagerFactory;
 
     @Bean
     @Primary
@@ -47,6 +57,10 @@ public class ActivitiDataSourceConfig extends AbstractProcessEngineAutoConfigura
         configuration.setTransactionManager(transactionManager());
         configuration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
         configuration.setJobExecutorActivate(true);
+        List<SessionFactory> list = new ArrayList<SessionFactory>();
+        list.add(customGroupEntityManagerFactory);
+        list.add(customUserEntityManagerFactory);
+        configuration.setCustomSessionFactories(list);
         return configuration;
     }
 }
