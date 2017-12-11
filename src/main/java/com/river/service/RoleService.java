@@ -17,4 +17,12 @@ public interface RoleService {
      * @return
      */
     List<Role> queryRoleByUserId(Long id);
+
+
+    /**
+     * 根据用户id获取角色名称
+     * @param id
+     * @return
+     */
+    List<String> queryRoleEnNameByUserId(Long id);
 }

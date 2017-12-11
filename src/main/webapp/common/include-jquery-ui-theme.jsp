@@ -1,0 +1,2 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<link href="/js/common/plugins/jui/themes/redmond/jquery-ui-1.8.16.custom.css" type="text/css" rel="stylesheet" />

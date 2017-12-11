@@ -2,6 +2,7 @@ package com.river.dao.mapper;
 
 import com.river.model.po.Role;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.access.method.P;
 
 import java.util.List;
 
@@ -25,4 +26,12 @@ public interface RoleMapper {
      * @return
      */
     List<Role> queryRoleByUserId(@Param("id") Long id);
+
+    /**
+     * 根据用户id获取角色名称
+     *
+     * @param id
+     * @return
+     */
+    List<String> queryRoleEnNameByUserId(@Param("id") Long id);
 }

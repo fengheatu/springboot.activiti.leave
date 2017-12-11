@@ -147,5 +147,24 @@
     AND role.is_delete = 0
   </select>
 
+  <select id="queryRoleEnNameByUserId" resultType="string">
+    SELECT
+    role_en_name
+    FROM
+    role
+    LEFT JOIN (
+    SELECT
+    role_id,
+    user_id
+    FROM
+    user_role
+    WHERE
+    is_delete = 0
+    ) ur ON ur.role_id = role.id
+    WHERE
+    user_id = #{id}
+    AND role.is_delete = 0
+  </select>
+
   <!--he.feng end-->
 </mapper>

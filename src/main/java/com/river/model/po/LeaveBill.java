@@ -9,7 +9,11 @@ public class LeaveBill {
 
     private Integer days;
 
-    private String reson;
+    private String reason;
+
+    private Integer status;
+
+    private Integer type;
 
     private Date beginTime;
 
@@ -47,12 +51,28 @@ public class LeaveBill {
         this.days = days;
     }
 
-    public String getReson() {
-        return reson;
+    public String getReason() {
+        return reason;
     }
 
-    public void setReson(String reson) {
-        this.reson = reson == null ? null : reson.trim();
+    public void setReason(String reason) {
+        this.reason = reason == null ? null : reason.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public Date getBeginTime() {

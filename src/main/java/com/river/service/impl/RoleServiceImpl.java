@@ -32,4 +32,15 @@ public class RoleServiceImpl implements RoleService {
     public List<Role> queryRoleByUserId(Long id) {
         return roleMapper.queryRoleByUserId(id);
     }
+
+    /**
+     * 根据用户id获取角色名称
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public List<String> queryRoleEnNameByUserId(Long id) {
+        return roleMapper.queryRoleEnNameByUserId(id);
+    }
 }

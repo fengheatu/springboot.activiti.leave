@@ -46,7 +46,7 @@
 
         <!-- 配置不生成Exmaple文件 -->
         <!--对应数据库表 mysql可以加入主键自增 字段命名 忽略某字段等-->
-        <table tableName="role" domainObjectName="Role"
+        <!--<table tableName="role" domainObjectName="Role"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
@@ -68,7 +68,7 @@
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
-        </table>
+        </table>-->
 
         <table tableName="leave_bill" domainObjectName="LeaveBill"
                enableCountByExample="false" enableUpdateByExample="false"

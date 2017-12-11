@@ -29,4 +29,13 @@ public class UserServiceImpl implements UserService {
     public User queryUserByPrimaryKey(Long id) {
         return userMapper.selectByPrimaryKey(id);
     }
+
+    /**
+     * @param mobile
+     * @return
+     */
+    @Override
+    public User queryUserByMobile(String mobile) {
+        return userMapper.queryUserByMobile(mobile);
+    }
 }

@@ -7,7 +7,7 @@ public class User {
 
     private String userName;
 
-    private String moble;
+    private String mobile;
 
     private String password;
 
@@ -37,12 +37,12 @@ public class User {
         this.userName = userName == null ? null : userName.trim();
     }
 
-    public String getMoble() {
-        return moble;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setMoble(String moble) {
-        this.moble = moble == null ? null : moble.trim();
+    public void setMobile(String mobile) {
+        this.mobile = mobile == null ? null : mobile.trim();
     }
 
     public String getPassword() {

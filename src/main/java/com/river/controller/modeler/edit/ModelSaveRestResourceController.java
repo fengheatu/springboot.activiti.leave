@@ -47,7 +47,7 @@ public class ModelSaveRestResourceController implements ModelDataJsonConstants {
     @Autowired
     private RepositoryService repositoryService;
 
-
+    /*@RequestBody MultiValueMap<String, String> values*/
     @RequestMapping(value = "/model/{modelId}/save", method = RequestMethod.PUT)
     public void saveModel(@PathVariable String modelId, @RequestParam String json_xml,
                           @RequestParam String svg_xml, @RequestParam String name, @RequestParam String description) {

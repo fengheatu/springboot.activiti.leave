@@ -16,4 +16,11 @@ public interface UserService {
      * @return
      */
     User queryUserByPrimaryKey(Long aLong);
+
+    /**
+     *
+     * @param mobile
+     * @return
+     */
+    User queryUserByMobile(String mobile);
 }
