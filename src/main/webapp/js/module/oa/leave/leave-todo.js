@@ -32,7 +32,8 @@ var detail = {};
  */
 function loadDetail(id, withVars, callback) {
     var dialog = this;
-    $.getJSON(ctx + '/oa/leave/detail/' + id, function(data) {
+    var taskId = $(this).data('taskId');
+    $.getJSON('/leave/details/' + taskId, function(data) {
         detail = data;
         $.each(data, function(k, v) {
 			
@@ -80,17 +81,15 @@ function complete(taskId, variables) {
     var dialog = this;
     
 	// 转换JSON为字符串
-    var keys = "", values = "", types = "";
+    var keys = "", values = "";
 	if (variables) {
 		$.each(variables, function() {
 			if (keys != "") {
 				keys += ",";
 				values += ",";
-				types += ",";
 			}
 			keys += this.key;
 			values += this.value;
-			types += this.type;
 		});
 	}
 	
@@ -99,18 +98,15 @@ function complete(taskId, variables) {
     });
 	
 	// 发送任务完成请求
-    $.post(ctx + '/oa/leave/complete/' + taskId, {
+    $.post('/leave/task/complete/' + taskId, {
         keys: keys,
         values: values,
-        types: types
+        // types: types
     }, function(resp) {
 		$.unblockUI();
-        if (resp == 'success') {
-            alert('任务完成');
-            location.reload();
-        } else {
-            alert('操作失败!');
-        }
+		alert('任务完成');
+		location.reload();
+
     });
 }
 
@@ -123,7 +119,7 @@ function complete(taskId, variables) {
  * btns:对话框显示的按钮
  */
 var handleOpts = {
-	deptLeaderAudit: {
+	leaveDetails: {
 		width: 300,
 		height: 300,
 		open: function(id) {
@@ -138,9 +134,8 @@ var handleOpts = {
 				
 				// 设置流程变量
 				complete(taskId, [{
-					key: 'deptLeaderPass',
+					key: 'pass',
 					value: true,
-					type: 'B'
 				}]);
 			}
 		}, {
@@ -167,20 +162,18 @@ var handleOpts = {
 							
 							// 设置流程变量
 							complete(taskId, [{
-								key: 'deptLeaderPass',
+								key: 'pass',
 								value: false,
-								type: 'B'
 							}, {
 								key: 'leaderBackReason',
 								value: leaderBackReason,
-								type: 'S'
 							}]);
 						}
 					}, {
 						text: '取消',
 						click: function() {
 							$(this).dialog('close');
-							$('#deptLeaderAudit').dialog('close');
+							$('#leaveDetails').dialog('close');
 						}
 					}]
 				});
@@ -218,7 +211,7 @@ var handleOpts = {
 				
 				$('<div/>', {
 					title: '填写驳回理由',
-					html: "<textarea id='hrBackReason' style='width: 250px; height: 60px;'></textarea>"
+					html: "<textarea name = 'comment' id='hrBackReason' style='width: 250px; height: 60px;'></textarea>"
 				}).dialog({
 					modal: true,
 					buttons: [{
@@ -245,7 +238,7 @@ var handleOpts = {
 						text: '取消',
 						click: function() {
 							$(this).dialog('close');
-							$('#deptLeaderAudit').dialog('close');
+							$('#leaveDetails').dialog('close');
 						}
 					}]
 				});
@@ -299,7 +292,6 @@ var handleOpts = {
 				complete(taskId, [{
 					key: 'reApply',
 					value: reApply,
-					type: 'B'
 				}, {
 					key: 'leaveType',
 					value: $('#modifyApplyContent #leaveType').val(),
@@ -354,12 +346,10 @@ var handleOpts = {
 				var taskId = $(this).data('taskId');
 				complete(taskId, [{
 					key: 'realityStartTime',
-					value: realityStartTime,
-					type: 'D'
+					value: realityStartTime
 				}, {
 					key: 'realityEndTime',
-					value: realityEndTime,
-					type: 'D'
+					value: realityEndTime
 				}]);
 			}
 		},{

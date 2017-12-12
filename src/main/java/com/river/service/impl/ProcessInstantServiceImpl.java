@@ -1,5 +1,6 @@
 package com.river.service.impl;
 
+import com.river.constant.LeaveBillConst;
 import com.river.dao.mapper.LeaveBillMapper;
 import com.river.model.dto.VariablesDTO;
 import com.river.model.po.LeaveBill;
@@ -12,9 +13,10 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -31,7 +33,7 @@ import java.util.Map;
 @Service("processInstantService")
 public class ProcessInstantServiceImpl implements ProcessInstantService {
 
-    private static final Logger logger = Logger.getLogger(ProcessInstantServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(ProcessInstantServiceImpl.class);
 
     @Resource
     private TaskService taskService;
@@ -111,16 +113,16 @@ public class ProcessInstantServiceImpl implements ProcessInstantService {
      * @param leaveBillId
      * @param taskId
      * @param comment
-     * @param variables
      */
     @Override
+    @Transactional
     public void taskComplete(Long leaveBillId, String taskId, String comment, VariablesDTO variable) {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         String processInstanceId = task.getProcessInstanceId();
         //审批备注
         taskService.addComment(taskId,processInstanceId,comment);
         Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put(variable.getKey(), variable.getValue());
+        variables.put(variable.getKeys(), variable.getValues());
 
         taskService.complete(taskId, variables);
 
@@ -129,14 +131,27 @@ public class ProcessInstantServiceImpl implements ProcessInstantService {
 
         if (null == processInstance) {
             LeaveBill leaveBill = leaveBillMapper.selectByPrimaryKey(leaveBillId);
-            if ("0".equals(variable.getValue())) {
-                leaveBill.setStatus(3);
+            if ("pass".equals(variable.getKeys()) && "true".equals(variable.getValues())) {
+                leaveBill.setStatus(LeaveBillConst.LEAVE_BILL_PASS);
             } else {
-                leaveBill.setStatus(2);
+                leaveBill.setStatus(LeaveBillConst.LEAVE_BILL_NOT_PASS);
             }
             leaveBillMapper.updateByPrimaryKeySelective(leaveBill);
         }
 
+    }
+
+    /**
+     * 查询运行中的流程
+     *
+     * @return
+     */
+    @Override
+    public List<ProcessInstance> queryProcessRunning() {
+        return runtimeService.createProcessInstanceQuery()
+                .orderByProcessInstanceId()
+                .desc()
+                .list();
     }
 
 

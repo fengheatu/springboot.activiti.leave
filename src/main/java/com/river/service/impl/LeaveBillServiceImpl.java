@@ -1,22 +1,27 @@
 package com.river.service.impl;
 
+import com.river.constant.LeaveBillConst;
 import com.river.dao.mapper.LeaveBillMapper;
+import com.river.model.dto.VariablesDTO;
 import com.river.model.po.LeaveBill;
 import com.river.model.po.User;
 import com.river.service.LeaveBillService;
-import groovy.util.ObservableMap;
+import com.river.service.RoleService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -27,7 +32,7 @@ import java.util.Map;
 @Service("leaveService")
 public class LeaveBillServiceImpl implements LeaveBillService {
 
-    private static final Logger logger = Logger.getLogger(LeaveBillServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(LeaveBillServiceImpl.class);
 
     @Resource
     private LeaveBillMapper leaveBillMapper;
@@ -38,6 +43,12 @@ public class LeaveBillServiceImpl implements LeaveBillService {
     @Resource
     private RuntimeService runtimeService;
 
+    @Resource
+    private RoleService roleService;
+
+    @Resource
+    private HistoryService historyService;
+
 
     /**
      * 开始请假流程
@@ -46,12 +57,13 @@ public class LeaveBillServiceImpl implements LeaveBillService {
      * @param user
      */
     @Override
+    @Transactional
     public void startProcess(LeaveBill leaveBill, User user) {
         initLeaveBill(leaveBill,user);
-        leaveBill.setStatus(0);
+        leaveBill.setStatus(LeaveBillConst.LEAVE_BILL_APPROVE_ING);
         leaveBillMapper.insert(leaveBill);
         //业务关联流程实例
-        String businessKey = LeaveBill.class.getName() + ":" + leaveBill.getId();
+        String businessKey = leaveBill.getClass().getSimpleName() + ":" + leaveBill.getId();
         Map<String,Object> variables = new HashMap<String,Object>();
         variables.put("inputUser",user.getId());
         variables.put("businessKey",businessKey);
@@ -83,6 +95,151 @@ public class LeaveBillServiceImpl implements LeaveBillService {
             leaveId = Long.valueOf(businessKey.split(":")[1]);
         }
         return leaveBillMapper.selectByPrimaryKey(leaveId);
+    }
+
+    /**
+     * 查询真正运行的任务
+     *
+     * @return
+     */
+    @Override
+    public List<Object[]> queryRunningList() {
+
+        List<Object[]> result = new ArrayList<>();
+        //当前运行流程
+        List<ProcessInstance> processInstanceList = runtimeService.createProcessInstanceQuery().list();
+        for(ProcessInstance processInstance : processInstanceList) {
+            String businessKey = processInstance.getBusinessKey();
+            Long leaveBillId = null;
+            if (StringUtils.isNotBlank(businessKey)) {
+                leaveBillId = Long.valueOf(businessKey.split(":")[1]);
+                LeaveBill leaveBill = leaveBillMapper.selectByPrimaryKey(leaveBillId);
+                Task task = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).singleResult();
+                result.add(new Object[]{leaveBill,task,processInstance});
+            }
+
+        }
+
+        return result;
+    }
+
+    /**
+     * 请假任务列表
+     *
+     * @return
+     * @param user
+     */
+    @Override
+    public List<Object[]> queryTaskList(User user) {
+        List<Object[]> result = new ArrayList<>();
+
+        //已签收任务
+        List<Task> tasks = taskService.createTaskQuery().taskAssignee(String.valueOf(user.getId())).list();
+        initTaskList(result, tasks);
+
+        //未签收的
+        List<String> roles = roleService.queryRoleEnNameByUserId(user.getId());
+        if(!CollectionUtils.isEmpty(roles)) {
+            List<Task> tasks1 = taskService.createTaskQuery().taskCandidateGroupIn(roles).active().list();
+            initTaskList(result,tasks1);
+        }
+        return result;
+    }
+
+    /**
+     * 任务签收
+     *
+     * @param taskId
+     * @param user
+     */
+    @Override
+    public void taskClaim(String taskId, User user) {
+        taskService.claim(taskId,String.valueOf(user.getId()));
+    }
+
+
+    /**
+     * @param taskId
+     * @param comment
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void taskComplete(String taskId, String comment, VariablesDTO variable) {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        String processInstanceId = task.getProcessInstanceId();
+
+        //审批备注
+        if(StringUtils.isNotBlank(comment)) {
+            taskService.addComment(taskId,processInstanceId,comment);
+
+        }
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put(variable.getKeys(), Boolean.valueOf(variable.getValues()));
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+                .processInstanceId(processInstanceId).singleResult();
+        String businessKey = processInstance.getBusinessKey();
+        //完成任务
+        taskService.complete(taskId, variables);
+
+        Long leaveBillId = null;
+        if(StringUtils.isNotBlank(businessKey)) {
+            leaveBillId = Long.valueOf(businessKey.split(":")[1]);
+        }
+
+        //判断任务是否完成
+        ProcessInstance processInstance1 = runtimeService.createProcessInstanceQuery()
+                .processInstanceId(processInstanceId).singleResult();
+        if (null == processInstance1) {
+            LeaveBill leaveBill = leaveBillMapper.selectByPrimaryKey(leaveBillId);
+            if ("pass".equals(variable.getKeys()) && "true".equals(variable.getValues())) {
+                leaveBill.setStatus(LeaveBillConst.LEAVE_BILL_PASS);
+            } else {
+                leaveBill.setStatus(LeaveBillConst.LEAVE_BILL_NOT_PASS);
+            }
+            leaveBillMapper.updateByPrimaryKeySelective(leaveBill);
+        }
+
+    }
+
+    /**
+     * 已完成任务
+     *
+     * @return
+     */
+    @Override
+    public List<Object[]> queryFinishedList() {
+        List<Object[]> result = new ArrayList<>();
+        List<HistoricProcessInstance> list = historyService.createHistoricProcessInstanceQuery()
+                .processDefinitionKey("LeaveBill").list();
+        for (HistoricProcessInstance historicProcessInstance : list) {
+            String businessKey = historicProcessInstance.getBusinessKey();
+            if(StringUtils.isNotBlank(businessKey)) {
+                Long leaveBillId = Long.valueOf(businessKey.split(":")[1]);
+                LeaveBill leaveBill = leaveBillMapper.selectByPrimaryKey(leaveBillId);
+                result.add(new Object[]{leaveBill,historicProcessInstance});
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 初始化任务列表
+     * @param result
+     * @param tasks
+     */
+    private void initTaskList(List<Object[]> result, List<Task> tasks) {
+        for (Task task : tasks) {
+            String processInstanceId = task.getProcessInstanceId();
+            ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
+                    .singleResult();
+            Long leaveBillId = null;
+            String businessKey = processInstance.getBusinessKey();
+            if(StringUtils.isNotBlank(businessKey)) {
+                leaveBillId = Long.valueOf(businessKey.split(":")[1]);
+                LeaveBill leaveBill = leaveBillMapper.selectByPrimaryKey(leaveBillId);
+                result.add(new Object[]{leaveBill,task,processInstance});
+            }
+        }
     }
 
 

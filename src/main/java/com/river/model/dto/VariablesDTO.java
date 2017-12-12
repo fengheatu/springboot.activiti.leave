@@ -7,23 +7,23 @@ package com.river.model.dto;
  **/
 public class VariablesDTO {
 
-    private String key;
+    private String keys;
 
-    private String value;
+    private String values;
 
-    public String getKey() {
-        return key;
+    public String getKeys() {
+        return keys;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setKeys(String keys) {
+        this.keys = keys;
     }
 
-    public String getValue() {
-        return value;
+    public String getValues() {
+        return values;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setValues(String values) {
+        this.values = values;
     }
 }

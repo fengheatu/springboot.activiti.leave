@@ -1,7 +1,12 @@
 package com.river.service;
 
+import com.river.model.dto.VariablesDTO;
 import com.river.model.po.LeaveBill;
-import com.river.model.po.User; /**
+import com.river.model.po.User;
+
+import java.util.List;
+
+/**
  * @author: he.feng
  * @date: 10:14 2017/12/8
  * @desc:
@@ -22,4 +27,41 @@ public interface LeaveBillService {
      * @return
      */
     LeaveBill queryLeaveBillDetailsByTaskId(String taskId);
+
+
+    /**
+     * 查询真正运行的任务
+     * @return
+     */
+    List<Object[]> queryRunningList();
+
+
+    /**
+     * 请假任务列表
+     * @return
+     * @param user
+     */
+    List<Object[]> queryTaskList(User user);
+
+
+    /**
+     * 任务签收
+     * @param taskId
+     * @param user
+     */
+    void taskClaim(String taskId, User user);
+
+    /**
+     *
+     * @param taskId
+     * @param comment
+     * @param variables
+     */
+    void taskComplete(String taskId, String comment, VariablesDTO variables);
+
+    /**
+     * 已完成任务
+     * @return
+     */
+    List<Object[]> queryFinishedList();
 }

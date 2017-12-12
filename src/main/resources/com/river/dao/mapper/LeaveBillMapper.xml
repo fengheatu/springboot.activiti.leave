@@ -29,7 +29,7 @@
     delete from leave_bill
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.river.model.po.LeaveBill" >
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.river.model.po.LeaveBill" >
     insert into leave_bill (id, user_id, days, 
       reason, status, type, 
       begin_time, create_by, update_by, 

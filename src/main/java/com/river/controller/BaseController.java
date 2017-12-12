@@ -1,5 +1,6 @@
 package com.river.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.river.constant.UserConst;
 import com.river.model.po.User;
 
@@ -18,5 +19,9 @@ public class BaseController {
           throw new RuntimeException("no login");
       }
       return user;
+    }
+
+    public String objectToJson(Object object) {
+        return JSONObject.toJSONString(object);
     }
 }

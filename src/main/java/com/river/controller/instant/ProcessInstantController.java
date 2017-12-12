@@ -4,7 +4,8 @@ import com.river.controller.BaseController;
 import com.river.model.dto.VariablesDTO;
 import com.river.model.po.User;
 import com.river.service.ProcessInstantService;
-import org.activiti.engine.task.Task;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +26,7 @@ import java.util.Map;
 @RequestMapping("/process/instant")
 public class ProcessInstantController extends BaseController{
 
-    private static final Logger logger = Logger.getLogger(ProcessInstantController.class);
+    private static final Logger logger = LogManager.getLogger(ProcessInstantController.class);
 
     @Resource
     private ProcessInstantService processInstantService;
@@ -43,7 +43,7 @@ public class ProcessInstantController extends BaseController{
         logger.info("待办理任务");
         User user = getCurrentUser(request);
         List<Map<String,Object>> result = processInstantService.queryTaskToDoList(user);
-        modelAndView.addObject("result",request);
+        modelAndView.addObject("result",result);
         modelAndView.setViewName("oa/leave/taskList");
         return modelAndView;
     }
@@ -71,7 +71,10 @@ public class ProcessInstantController extends BaseController{
      */
     @RequestMapping("/running")
     public ModelAndView processRunning(ModelAndView modelAndView, HttpServletRequest request) {
-
+        logger.info("查询运行中的流程");
+        List<ProcessInstance> list = processInstantService.queryProcessRunning();
+        modelAndView.addObject("result",list);
+        modelAndView.setViewName("oa/leave/running");
         return modelAndView;
     }
 

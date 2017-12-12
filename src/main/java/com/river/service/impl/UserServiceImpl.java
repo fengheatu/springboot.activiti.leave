@@ -3,6 +3,7 @@ package com.river.service.impl;
 import com.river.dao.mapper.UserMapper;
 import com.river.model.po.User;
 import com.river.service.UserService;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import javax.annotation.Resource;
 @Service("userService")
 public class UserServiceImpl implements UserService {
 
-    private static final Logger logger = Logger.getLogger(UserServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     @Resource
     private UserMapper userMapper;

@@ -75,7 +75,7 @@ public class ModelerController extends BaseController{
     @RequestMapping(value = "/modify/{modelId}",method = RequestMethod.GET)
     public String modify(@PathVariable("modelId") String modelId) {
         logger.info("编辑模型 modelId = " + modelId);
-        return "redirect:../modeler.html?modelId=" + modelId;
+        return "redirect:../../modeler.html?modelId=" + modelId;
     }
 
 

@@ -2,6 +2,7 @@ package com.river.service;
 
 import com.river.model.dto.VariablesDTO;
 import com.river.model.po.User;
+import org.activiti.engine.runtime.ProcessInstance;
 
 import java.util.List;
 import java.util.Map;
@@ -44,4 +45,11 @@ public interface ProcessInstantService {
      * @param variables
      */
     void taskComplete(Long leaveBillId, String taskId, String comment, VariablesDTO variables);
+
+
+    /**
+     * 查询运行中的流程
+     * @return
+     */
+    List<ProcessInstance> queryProcessRunning();
 }

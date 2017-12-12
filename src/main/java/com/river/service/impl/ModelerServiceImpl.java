@@ -12,6 +12,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ import java.util.List;
 @Service("modelerService")
 public class ModelerServiceImpl implements ModelerService {
 
-    private static final  Logger logger = Logger.getLogger(ModelerServiceImpl.class);
+    private static final  Logger logger = LogManager.getLogger(ModelerServiceImpl.class);
 
     @Resource
     private RepositoryService repositoryService;

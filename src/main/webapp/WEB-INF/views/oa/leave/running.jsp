@@ -33,9 +33,8 @@
 			<tr>
 				<th>假种</th>
 				<th>申请人</th>
-				<th>申请时间</th>
 				<th>开始时间</th>
-				<th>结束时间</th>
+				<th>请假原因</th>
 				<th>当前节点</th>
 				<th>任务创建时间</th>
 				<th>流程状态</th>
@@ -43,25 +42,24 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${page.result }" var="leave">
-				<c:set var="task" value="${leave.task }" />
-				<c:set var="pi" value="${leave.processInstance }" />
+			<c:forEach items="${result }" var="object">
+				<c:set var="leave" value="${object[0] }" />
+				<c:set var="task" value="${object[1] }" />
+				<c:set var="pi" value="${object[2] }" />
 				<tr id="${leave.id }" tid="${task.id }">
-					<td>${leave.leaveType }</td>
+					<td>${leave.type }</td>
 					<td>${leave.userId }</td>
-					<td>${leave.applyTime }</td>
-					<td>${leave.startTime }</td>
-					<td>${leave.endTime }</td>
+					<td><fmt:formatDate value="${leave.beginTime }" pattern="yyyy-MM-dd HH:mm:ss"/> </td>
+					<td>${leave.reason}</td>
 					<td>
 						<a class="trace" href='#' pid="${pi.id }" pdid="${pi.processDefinitionId}" title="点击查看流程图">${task.name }</a>
 					</td>
-					<td>${task.createTime }</td>
-					<td>${pi.suspended ? "已挂起" : "正常" }；<b title='流程版本号'>V: ${leave.processDefinition.version }</b></td>
+					<td><fmt:formatDate value="${task.createTime }" pattern="yyyy-MM-dd HH:mm:ss"/> </td>
+					<td>${pi.suspended ? "已挂起" : "正常" }；<b title='流程版本号'>V: ${pi.revision }</b></td>
 					<td>${task.assignee }</td>
 				</tr>
 			</c:forEach>
 		</tbody>
 	</table>
-	<tags:pagination page="${page}" paginationSize="${page.pageSize}"/>
 </body>
 </html>

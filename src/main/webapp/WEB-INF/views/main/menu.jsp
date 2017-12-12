@@ -5,9 +5,9 @@
 		<a rel="#">请假（普通表单）</a>
 		<ul>
 			<li><a href="/leave/apply" target="mainIframe">请假申请(普通)</a></li>
-			<li><a rel="oa/leave/list/task">请假办理(普通)</a></li>
-			<li><a rel="oa/leave/list/running">运行中流程(普通)</a></li>
-			<li><a rel="oa/leave/list/finished">已结束流程(普通)</a></li>
+			<li><a href="/leave/list/task" target="mainIframe">请假办理(普通)</a></li>
+			<li><a href="/leave/running/list" target="mainIframe">运行中流程(普通)</a></li>
+			<li><a href="/leave/list/finished" target="mainIframe">已结束流程(普通)</a></li>
 		</ul>
 	</li>
 	<li>
@@ -15,7 +15,7 @@
 		<ul>
 			<li><a rel="form/dynamic/process-list">流程列表(动态)</a></li>
 			<li><a rel="form/dynamic/task/list">任务列表(动态)</a></li>
-			<li><a rel="form/dynamic/process-instance/running/list">运行中流程表(动态)</a></li>
+			<li><a href="/process/instant/running" target="mainIframe">运行中流程表(动态)</a></li>
 			<li><a rel="form/dynamic/process-instance/finished/list">已结束流程(动态)</a></li>
 		</ul>
 	</li>
@@ -44,7 +44,7 @@
 				<a rel='#'>流程管理</a>
 				<ul>
 					<li><a href='/process/list' target="mainIframe">流程定义及部署管理</a></li>
-					<li><a rel='workflow/processinstance/running'>运行中流程</a></li>
+					<li><a href='/process/instant/running' target="mainIframe">运行中流程</a></li>
 					<li><a href='/modeler/list' style="text-decoration: none" target="mainIframe">模型工作区</a></li>
 				</ul>
 			</li>

@@ -5,6 +5,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ import java.util.List;
 @Service("processService")
 public class ProcessServiceImpl implements ProcessService {
 
-    private static final Logger logger = Logger.getLogger(ProcessServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(ProcessServiceImpl.class);
 
     @Resource
     private RepositoryService repositoryService;

@@ -2,6 +2,7 @@ package com.river.controller.process;
 
 import com.river.controller.BaseController;
 import com.river.service.ProcessService;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.cglib.core.ProcessArrayCallback;
 import org.springframework.security.access.method.P;
@@ -23,7 +24,7 @@ import java.util.List;
 @RequestMapping("/process")
 public class ProcessController extends BaseController {
 
-    private static final Logger logger = Logger.getLogger(ProcessController.class);
+    private static final Logger logger = LogManager.getLogger(ProcessController.class);
 
     @Resource
     private ProcessService processService;

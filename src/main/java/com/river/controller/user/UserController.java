@@ -5,6 +5,7 @@ import com.river.model.po.Role;
 import com.river.model.po.User;
 import com.river.service.RoleService;
 import com.river.service.UserService;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +28,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-    private static final Logger logger = Logger.getLogger(UserController.class);
+    private static final Logger logger = LogManager.getLogger(UserController.class);
 
     @Resource
     private UserService userService;
