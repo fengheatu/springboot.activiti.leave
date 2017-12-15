@@ -65,4 +65,8 @@
 			<li><a href="${ctx}/rest/identity/groups" target="_blank">组</a></li>
 		</ul>
 	</li>
+
+	<li>
+		<a href="/druid/index.html" target="mainIframe">web监控</a>
+	</li>
 </ul>

@@ -164,9 +164,6 @@ var handleOpts = {
 							complete(taskId, [{
 								key: 'pass',
 								value: false,
-							}, {
-								key: 'leaderBackReason',
-								value: leaderBackReason,
 							}]);
 						}
 					}, {

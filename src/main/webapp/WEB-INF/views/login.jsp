@@ -55,11 +55,11 @@
 					<%--<td><input id="username" name="username" class="login-input" placeholder="用户名（见下左表）" /></td>--%>
                     <td height="24" colspan="2" valign="bottom">
                         <select name="mobile" class="login-input" >
-                            <option value="13122198121">张三</option>
-                            <option value="13122198122">李四</option>
-                            <option value="13122198123">王五</option>
-                            <option value="13122198124">赵六</option>
-                            <option value="13122198125">李七</option>
+                            <option value="13122198121">普通员工</option>
+                            <option value="13122198122">部门经理1</option>
+                            <option value="13122198123">部门经理2</option>
+                            <option value="13122198124">总经理1</option>
+                            <option value="13122198125">总经理2</option>
                         </select><br/>
                     </td>
 				</tr>

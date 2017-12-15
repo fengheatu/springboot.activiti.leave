@@ -80,21 +80,6 @@ public class ModelSaveRestResourceController implements ModelDataJsonConstants {
             repositoryService.addModelEditorSourceExtra(model.getId(), result);
             outStream.close();
 
-            //部署流程
-            Model modelData = repositoryService.getModel(modelId);
-            ObjectNode modelNode = (ObjectNode) objectMapper.readTree(repositoryService.getModelEditorSource(modelData.getId()));
-            byte[] bpmnBytes = null;
-            BpmnModel model2 = new BpmnJsonConverter().convertToBpmnModel(modelNode);
-            bpmnBytes = new BpmnXMLConverter().convertToXML(model2);
-
-            String processName = modelData.getName() + ".bpmn";
-
-            //部署流程
-            Deployment deployment = repositoryService.createDeployment()
-                    .name(modelData.getName())
-                    .addString(processName, StringUtils.toEncodedString(bpmnBytes, Charset.forName("UTF-8")))
-                    .deploy();
-
 
         } catch (Exception e) {
             LOGGER.error("Error saving model", e);
