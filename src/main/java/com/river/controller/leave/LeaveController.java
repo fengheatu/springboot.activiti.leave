@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -165,5 +166,18 @@ public class LeaveController extends BaseController{
         return modelAndView;
     }
 
+
+    @RequestMapping("/process/trace/auto/{processInstanceId}")
+    public void readImage(@PathVariable("processInstanceId") String processInstanceId, HttpServletResponse response){
+        logger.info("获取当前节点的流程图pid=" + processInstanceId);
+        leaveBillService.readProcessImage(processInstanceId,response);
+    }
+
+    @RequestMapping("/process/trace/auto/{processInstanceId}/{processDefinitionId}")
+    public String readImage2(@PathVariable("processInstanceId") String processInstanceId,
+                           @PathVariable("processDefinitionId") String processDefinitionId){
+        logger.info("获取当前节点的流程图pid=" + processInstanceId);
+        return "redirect:../../../../../diagram-viewer/index.html?processDefinitionId=" + processDefinitionId + "&processInstanceId=" + processInstanceId;
+    }
 
 }

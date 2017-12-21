@@ -4,6 +4,7 @@ import com.river.model.dto.VariablesDTO;
 import com.river.model.po.LeaveBill;
 import com.river.model.po.User;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -64,4 +65,12 @@ public interface LeaveBillService {
      * @return
      */
     List<Object[]> queryFinishedList();
+
+
+    /**
+     * 获取当前节点流程图
+     * @param processInstanceId
+     * @param response
+     */
+    void readProcessImage(String processInstanceId, HttpServletResponse response);
 }

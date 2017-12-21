@@ -52,7 +52,8 @@
 					<td><fmt:formatDate value="${leave.beginTime }" pattern="yyyy-MM-dd HH:mm:ss"/> </td>
 					<td>${leave.reason}</td>
 					<td>
-						<a class="trace" href='#' pid="${pi.id }" pdid="${pi.processDefinitionId}" title="点击查看流程图">${task.name }</a>
+						<a href="/leave/process/trace/auto/${pi.id }" target="_blank" title="点击查看流程图">${task.name }</a>
+						<a href="/leave/process/trace/auto/${pi.id }/${pi.processDefinitionId}" target="_blank" title="点击查看流程图">diagram-viewer</a>
 					</td>
 					<td><fmt:formatDate value="${task.createTime }" pattern="yyyy-MM-dd HH:mm:ss"/> </td>
 					<td>${pi.suspended ? "已挂起" : "正常" }；<b title='流程版本号'>V: ${pi.revision }</b></td>

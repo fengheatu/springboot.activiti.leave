@@ -7,6 +7,7 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.AbstractProcessEngineAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -23,6 +24,7 @@ import java.util.List;
  * @desc:
  **/
 @Configuration
+@ComponentScan(basePackages = {"org.activiti.rest.diagram.services"})
 public class ActivitiDataSourceConfig extends AbstractProcessEngineAutoConfiguration {
 
     @Resource
@@ -61,6 +63,9 @@ public class ActivitiDataSourceConfig extends AbstractProcessEngineAutoConfigura
         list.add(customGroupEntityManagerFactory);
         list.add(customUserEntityManagerFactory);
         configuration.setCustomSessionFactories(list);
+        configuration.setActivityFontName("宋体");
+        configuration.setAnnotationFontName("宋体");
+        configuration.setLabelFontName("宋体");
         return configuration;
     }
 }

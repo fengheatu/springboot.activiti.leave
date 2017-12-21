@@ -7,20 +7,24 @@ import com.river.model.po.LeaveBill;
 import com.river.model.po.User;
 import com.river.service.LeaveBillService;
 import com.river.service.RoleService;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 
@@ -48,6 +52,17 @@ public class LeaveBillServiceImpl implements LeaveBillService {
 
     @Resource
     private HistoryService historyService;
+
+    @Resource
+    private ProcessEngine processEngine;
+
+    @Resource
+    private RepositoryService repositoryService;
+
+
+    @Resource
+    private ProcessEngineConfiguration processEngineConfiguration;
+
 
 
     /**
@@ -220,6 +235,42 @@ public class LeaveBillServiceImpl implements LeaveBillService {
             }
         }
         return result;
+    }
+
+    /**
+     * 获取当前节点流程图
+     *
+     * @param processInstanceId
+     * @param response
+     */
+    @Override
+    public void readProcessImage(String processInstanceId, HttpServletResponse response) {
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+                .processInstanceId(processInstanceId).singleResult();
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+        List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstanceId);
+        ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
+
+        //BpmnModel bpmnModel, String imageType, List<String> highLightedActivities, List<String> highLightedFlows, String activityFontName, String labelFontName, String annotationFontName, ClassLoader customClassLoader, double scaleFactor
+        InputStream in = diagramGenerator.generateDiagram(bpmnModel,"png",activeActivityIds,
+                Collections.<String>emptyList(),
+                processEngineConfiguration.getActivityFontName(),
+                processEngineConfiguration.getLabelFontName(),
+                processEngineConfiguration.getAnnotationFontName(),
+                processEngineConfiguration.getClassLoader(),
+                1.0);
+
+        byte[] bytes = new byte[1024];
+        int len;
+        try {
+            while ((len = in.read(bytes)) != -1) {
+                response.getOutputStream().write(bytes,0,len);
+            }
+        } catch (IOException e) {
+            logger.error("获取当前节点流程图异常",e);
+            throw new RuntimeException("获取当前节点流程图异常",e);
+        }
+
     }
 
     /**
